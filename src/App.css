@@ -1,0 +1,338 @@
+      :root {
+        --bg-0: #0a0f14; /* deep terminal */
+        --bg-1: #0e1621; /* panel */
+        --fg: #d1f7ff; /* text */
+        --accent: #00ffc6; /* neon */
+        --warn: #ff3864;
+        --ok: #00ffa1;
+        --cell-size: min(6vh, 6vw, 38px);
+        --gap: 4px;
+        --radius: 10px;
+        --shadow: 0 0 20px rgba(0, 255, 198, 0.2),
+          0 0 40px rgba(0, 255, 198, 0.1);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+          Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--fg);
+        background: radial-gradient(
+          1200px 800px at 20% -10%,
+          #12202b 0%,
+          #0a0f14 45%,
+          #070a0d 100%
+        );
+        letter-spacing: 0.2px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 14px 16px;
+        border-bottom: 1px solid #123;
+        background: linear-gradient(#0d141c, #0a0f14);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .logo {
+        font-weight: 900;
+        letter-spacing: 1.5px;
+        font-size: 18px;
+        color: var(--accent);
+        text-shadow: 0 0 8px rgba(0, 255, 198, 0.5);
+        user-select: none;
+      }
+      .glitch {
+        position: relative;
+        display: inline-block;
+      }
+      .glitch::before,
+      .glitch::after {
+        content: attr(data-text);
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0.6;
+        filter: blur(0.6px);
+      }
+      .glitch::before {
+        transform: translateX(1px);
+        color: #ff2d95;
+        mix-blend-mode: screen;
+      }
+      .glitch::after {
+        transform: translateX(-1px);
+        color: #29e6ff;
+        mix-blend-mode: screen;
+      }
+
+      .panel {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        margin-left: auto;
+      }
+      .stat {
+        padding: 6px 10px;
+        background: #0d1822;
+        border: 1px solid #143241;
+        border-radius: 8px;
+        box-shadow: inset 0 0 0 1px rgba(0, 255, 198, 0.06);
+      }
+      .bar {
+        width: 120px;
+        height: 8px;
+        background: #0a131a;
+        border-radius: 99px;
+        overflow: hidden;
+        border: 1px solid #183544;
+      }
+      .bar > i {
+        display: block;
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--accent), #66ffe6);
+        box-shadow: var(--shadow);
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 16px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .wrap {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 20px;
+      }
+      @media (max-width: 980px) {
+        .wrap {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .card {
+        background: linear-gradient(180deg, #0c141b 0%, #0a0f14 100%);
+        border: 1px solid #133042;
+        border-radius: 14px;
+        padding: 14px;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+      }
+      .card h3 {
+        margin: 4px 0 10px;
+        font-size: 13px;
+        color: #9ce;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+      }
+
+      .palette {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .swatch {
+        position: relative;
+        height: 44px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        outline: none;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+        transition: transform 0.06s ease, box-shadow 0.2s ease;
+      }
+      .swatch:active {
+        transform: translateY(1px);
+      }
+      .swatch kbd {
+        position: absolute;
+        right: 8px;
+        top: 6px;
+        font: 10px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        background: rgba(0, 0, 0, 0.45);
+        padding: 2px 5px;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .swatch.active {
+        outline: 2px solid var(--fg);
+        box-shadow: var(--shadow);
+      }
+
+      .board {
+        display: grid;
+        justify-content: center;
+        gap: var(--gap);
+        padding: 10px;
+        background: linear-gradient(#0b1218, #0a0f14);
+        border: 1px solid #123242;
+        border-radius: 16px;
+        box-shadow: inset 0 0 0 1px rgba(0, 255, 198, 0.06);
+      }
+      .cell {
+        width: var(--cell-size);
+        height: var(--cell-size);
+        border-radius: 6px;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+          0 2px 10px rgba(0, 0, 0, 0.35);
+        transition: background-color 0.18s ease, box-shadow 0.25s ease,
+          transform 0.02s;
+      }
+      .cell.infected {
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+          0 0 10px rgba(0, 255, 198, 0.25), 0 0 26px rgba(0, 255, 198, 0.15);
+      }
+
+      .controls {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: 1fr;
+      }
+      .controls .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .controls input,
+      .controls select,
+      .controls button {
+        height: 36px;
+        padding: 0 10px;
+        border-radius: 9px;
+        border: 1px solid #1b3a4b;
+        background: #0c141b;
+        color: var(--fg);
+      }
+      .controls button {
+        cursor: pointer;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+      }
+      .controls button.primary {
+        border-color: #177;
+        background: #0f2a2f;
+      }
+      .controls button.danger {
+        border-color: #522;
+        background: #211014;
+        color: #ffb9c9;
+      }
+      .hint {
+        font-size: 12px;
+        opacity: 0.8;
+        display: block;
+        line-height: 1.35;
+      }
+
+      .footer {
+        color: #8aa;
+        font-size: 12px;
+        opacity: 0.9;
+      }
+
+      /* Color theme: six virus strains (color + subtle pattern) */
+      /* Each swatch / cell gets class c0..c7 */
+      .c0 {
+        background: repeating-linear-gradient(
+          45deg,
+          #1affb8 0 6px,
+          #17d6a0 6px 12px
+        );
+      }
+      .c1 {
+        background: repeating-linear-gradient(
+          45deg,
+          #ff2d95 0 6px,
+          #d9267e 6px 12px
+        );
+      }
+      .c2 {
+        background: repeating-linear-gradient(
+          45deg,
+          #29e6ff 0 6px,
+          #19b8d3 6px 12px
+        );
+      }
+      .c3 {
+        background: repeating-linear-gradient(
+          45deg,
+          #ffd166 0 6px,
+          #e0b956 6px 12px
+        );
+      }
+      .c4 {
+        background: repeating-linear-gradient(
+          45deg,
+          #a28bff 0 6px,
+          #8a72e6 6px 12px
+        );
+      }
+      .c5 {
+        background: repeating-linear-gradient(
+          45deg,
+          #ff6b6b 0 6px,
+          #e05858 6px 12px
+        );
+      }
+      .c6 {
+        background: repeating-linear-gradient(
+          45deg,
+          #64ff8f 0 6px,
+          #4ed274 6px 12px
+        );
+      }
+      .c7 {
+        background: repeating-linear-gradient(
+          45deg,
+          #ff9cf5 0 6px,
+          #e082dc 6px 12px
+        );
+      }
+
+      /* Victory overlay */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(3, 7, 10, 0.8);
+        backdrop-filter: blur(3px);
+        z-index: 50;
+      }
+      .overlay.active {
+        display: flex;
+      }
+      .modal {
+        background: linear-gradient(#0d151c, #0a0f14);
+        border: 1px solid #143242;
+        border-radius: 16px;
+        padding: 18px;
+        width: min(520px, 92vw);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      }
+      .modal h2 {
+        margin: 6px 0 6px;
+        color: var(--accent);
+        text-shadow: 0 0 10px rgba(0, 255, 198, 0.3);
+      }
+      .modal .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 12px;
+      }
