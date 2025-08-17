@@ -659,7 +659,7 @@
 
         ensureTimer();
 
-        // Flood-grow: allow traversal through target OR selected color
+        // 1) Flood-grow from origin: allow traversal through target OR selected color
         const target = currentColor;
         const selected = c;
         const q = [[0, 0]];
@@ -687,6 +687,11 @@
             q.push([nx, ny]);
           }
         }
+
+        // 2) Capture rule: any group of non-selected cells completely surrounded by
+        //    the selected color OR the board edge (wall) flips to selected as well.
+        captureEnclosed(board, selected);
+
         currentColor = selected;
         moves++;
         renderAll();
@@ -698,6 +703,8 @@
         const target = currentColor;
         const selected = c;
         const sim = board.slice();
+
+        // Simulated flood from origin (same rule as play)
         const q = [[0, 0]];
         const seen = new Uint8Array(W * H);
         seen[0] = 1;
@@ -723,7 +730,11 @@
             q.push([nx, ny]);
           }
         }
-        // Count infected after sim
+
+        // Apply capture rule in the simulation
+        captureEnclosed(sim, selected);
+
+        // Count infected after sim (only connected to origin)
         let count = 0;
         const q2 = [[0, 0]];
         const seen2 = new Uint8Array(W * H);
@@ -751,6 +762,59 @@
           }
         }
         return count;
+      }
+      // Helper: flip enclosed groups to selected. A group is enclosed if every neighbor
+      // outside the group is either the selected color or out-of-bounds (wall).
+      function captureEnclosed(arr, selected) {
+        const seen = new Uint8Array(W * H);
+        const toFlip = [];
+        for (let i = 0; i < arr.length; i++) {
+          if (seen[i]) continue;
+          const col = arr[i];
+          if (col === selected) {
+            seen[i] = 1;
+            continue;
+          }
+          // BFS same-color component
+          const q = [i];
+          seen[i] = 1;
+          const comp = [];
+          let surrounded = true;
+          while (q.length) {
+            const k = q.pop();
+            comp.push(k);
+            const x = k % W,
+              y = (k / W) | 0;
+            const nbs = [
+              [1, 0],
+              [-1, 0],
+              [0, 1],
+              [0, -1],
+            ];
+            for (const [dx, dy] of nbs) {
+              const nx = x + dx,
+                ny = y + dy;
+              if (!inb(nx, ny)) {
+                // wall is fine
+                continue;
+              }
+              const j = idx(nx, ny);
+              if (arr[j] === col) {
+                if (!seen[j]) {
+                  seen[j] = 1;
+                  q.push(j);
+                }
+              } else if (arr[j] !== selected) {
+                surrounded = false;
+              }
+            }
+          }
+          if (surrounded) {
+            for (const k of comp) toFlip.push(k);
+          }
+        }
+        for (const k of toFlip) arr[k] = selected;
+        return toFlip.length;
       }
 
       function hint() {
